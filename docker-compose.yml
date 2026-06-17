@@ -1,0 +1,26 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "3000:8080"
+    environment:
+      # ── 直連 Anthropic 的 OpenAI 相容端點 ──
+      # Open WebUI 內建相容層會自動偵測 Anthropic URL 並抓取可用模型
+      - OPENAI_API_BASE_URL=https://api.anthropic.com/v1
+      - OPENAI_API_KEY=${ANTHROPIC_API_KEY}
+
+      # ── 工作階段加密金鑰（務必設定，否則容器重啟後存的連線設定會解不開）──
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
+
+      # ── 關閉 Ollama 探索（這個 setup 不跑本機模型，避免啟動時找不到 Ollama 報錯）──
+      - ENABLE_OLLAMA_API=false
+
+      # ── 第一個註冊的帳號自動成為管理員 ──
+      - DEFAULT_USER_ROLE=admin
+    volumes:
+      - open-webui-data:/app/backend/data
+
+volumes:
+  open-webui-data:
