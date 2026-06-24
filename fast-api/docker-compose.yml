@@ -6,7 +6,7 @@ services:
     container_name: arch1-api
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       # 預設就是 SQLite，這行可省略，列出來讓你知道可以改
       - DATABASE_URL=sqlite:////app/data/arch1.db
