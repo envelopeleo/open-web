@@ -1,0 +1,18 @@
+# Arch1 — SQLite 版（最簡，單服務）
+# 適合：快速起步、個人開發。資料庫就是容器裡的一個檔案。
+services:
+  arch1-api:
+    build: .
+    container_name: arch1-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # 預設就是 SQLite，這行可省略，列出來讓你知道可以改
+      - DATABASE_URL=sqlite:////app/data/arch1.db
+    volumes:
+      # 把 SQLite 檔案持久化到本機，容器重建資料不丟
+      - arch1-data:/app/data
+
+volumes:
+  arch1-data:
