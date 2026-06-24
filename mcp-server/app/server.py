@@ -8,8 +8,8 @@
 """
 from mcp.server.fastmcp import FastMCP
 
-import arch1_client
-from arch1_client import Arch1Error
+from app import arch1_client
+from app.arch1_client import Arch1Error
 
 # FastMCP 實例。名稱會顯示在 Open WebUI 的工具清單裡。
 #mcp = FastMCP("arch2-order-analytics")

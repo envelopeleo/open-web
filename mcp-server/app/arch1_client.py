@@ -7,7 +7,7 @@ import os
 import httpx
 
 # Arch1 API 的位址，從環境變數帶入（k8s 裡指向 Arch1 的 Service）
-ARCH1_BASE_URL = os.environ.get("ARCH1_BASE_URL", "http://arch1-api:8000")
+ARCH1_BASE_URL = os.environ.get("ARCH1_BASE_URL", "http://arch1-api:8001")
 
 # 統一的逾時設定，避免單一慢請求拖垮整個工具呼叫
 _TIMEOUT = httpx.Timeout(10.0, connect=5.0)
