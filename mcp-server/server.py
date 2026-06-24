@@ -8,11 +8,12 @@
 """
 from mcp.server.fastmcp import FastMCP
 
-from app import arch1_client
-from app.arch1_client import Arch1Error
+import arch1_client
+from arch1_client import Arch1Error
 
 # FastMCP 實例。名稱會顯示在 Open WebUI 的工具清單裡。
-mcp = FastMCP("arch2-order-analytics")
+#mcp = FastMCP("arch2-order-analytics")
+mcp = FastMCP("arch2-order-analytics", host="0.0.0.0", port=8000)
 
 
 def _safe(coro_result: dict) -> dict:
@@ -84,3 +85,4 @@ if __name__ == "__main__":
     # 以 streamable HTTP 模式啟動，供 Open WebUI 連接。
     # 預設監聽 0.0.0.0:8000，容器化時對外開這個 port。
     mcp.run(transport="streamable-http")
+    #mcp.run(transport="streamable-http", host="0.0.0.0", port=8000)
