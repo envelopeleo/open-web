@@ -1,0 +1,10 @@
+# 環境變數與機密
+.env
+.env.*
+!.env.example
+
+# K8s 機密（含真實金鑰）
+k8s/secret.yaml
+
+# macOS
+.DS_Store

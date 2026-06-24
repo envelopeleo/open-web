@@ -9,8 +9,8 @@ services:
     environment:
       MYSQL_DATABASE: arch1
       MYSQL_USER: arch1
-      MYSQL_PASSWORD: ${DB_PASSWORD:-arch1pass}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - arch1-mysql-data:/var/lib/mysql
     healthcheck:
@@ -27,7 +27,7 @@ services:
       - "8000:8000"
     environment:
       # 切換到 MySQL：只改這條連線字串，程式碼不動
-      - DATABASE_URL=mysql+pymysql://arch1:${DB_PASSWORD:-arch1pass}@db:3306/arch1
+      - DATABASE_URL=mysql+pymysql://arch1:${DB_PASSWORD}@db:3306/arch1
     depends_on:
       db:
         condition: service_healthy   # 等 DB 健康才啟動 API
