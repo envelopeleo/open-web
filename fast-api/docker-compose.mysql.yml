@@ -1,0 +1,36 @@
+# Arch1 — MySQL 版（雙服務，接近正式環境）
+# 適合：想練「API + 獨立資料庫」的正規結構。
+# 用法： docker compose -f docker-compose.mysql.yml up -d
+services:
+  db:
+    image: mysql:8.0
+    container_name: arch1-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: arch1
+      MYSQL_USER: arch1
+      MYSQL_PASSWORD: ${DB_PASSWORD:-arch1pass}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
+    volumes:
+      - arch1-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  arch1-api:
+    build: .
+    container_name: arch1-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # 切換到 MySQL：只改這條連線字串，程式碼不動
+      - DATABASE_URL=mysql+pymysql://arch1:${DB_PASSWORD:-arch1pass}@db:3306/arch1
+    depends_on:
+      db:
+        condition: service_healthy   # 等 DB 健康才啟動 API
+
+volumes:
+  arch1-mysql-data:
