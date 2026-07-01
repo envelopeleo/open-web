@@ -1,0 +1,35 @@
+services:
+  # ── 翻譯層：對外講 OpenAI 格式，對 Anthropic 講 Anthropic 格式 ──
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
+    restart: unless-stopped
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml:ro
+    # 不對外開 port，只給同一個 docker 網路裡的 open-webui 連
+
+  # ── 對話介面 ──
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "3000:8080"
+    environment:
+      # 改成連 LiteLLM（容器名 litellm，內部 port 4000），不再直連 Anthropic
+      - OPENAI_API_BASE_URL=http://litellm:4000/v1
+      - OPENAI_API_KEY=${LITELLM_MASTER_KEY}
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
+      - ENABLE_OLLAMA_API=false
+      - DEFAULT_USER_ROLE=admin
+    volumes:
+      - open-webui-data:/app/backend/data
+    depends_on:
+      - litellm
+
+volumes:
+  open-webui-data:

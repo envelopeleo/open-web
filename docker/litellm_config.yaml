@@ -1,0 +1,29 @@
+model_list:
+  # 把你 curl 看到的模型挑常用的列進來。
+  # model_name 是之後在 Open WebUI 裡顯示/選用的名稱（可自訂）
+  # litellm_params.model 必須是 anthropic/ 前綴 + 真實 model id
+  - model_name: claude-opus-4-8
+    litellm_params:
+      model: anthropic/claude-opus-4-8
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: claude-opus-4-7
+    litellm_params:
+      model: anthropic/claude-opus-4-7
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: claude-sonnet-4-6
+    litellm_params:
+      model: anthropic/claude-sonnet-4-6
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: claude-haiku-4-5
+    litellm_params:
+      model: anthropic/claude-haiku-4-5-20251001
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+litellm_settings:
+  drop_params: true        # 自動丟掉 Anthropic 不認得的 OpenAI 參數，避免報錯
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY   # Open WebUI 連 LiteLLM 時用的內部金鑰
