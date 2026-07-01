@@ -1,4 +1,4 @@
-# LiteLLM：翻譯層。內部用，不對外。
+# LiteLLM：翻譯層，接 Claude。內部用。
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +20,6 @@ spec:
           ports:
             - containerPort: 4000
           env:
-            # 從 Secret 取金鑰，注入成環境變數
             - name: ANTHROPIC_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -32,7 +31,6 @@ spec:
                   name: arch2-secrets
                   key: LITELLM_MASTER_KEY
           volumeMounts:
-            # 把 ConfigMap 掛成 /app/config.yaml
             - name: config
               mountPath: /app/config.yaml
               subPath: config.yaml
@@ -46,7 +44,6 @@ kind: Service
 metadata:
   name: litellm
 spec:
-  # ClusterIP = 只在叢集內部可見（open-webui 連得到，外面連不到）
   type: ClusterIP
   selector:
     app: litellm

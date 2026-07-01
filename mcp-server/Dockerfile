@@ -2,16 +2,17 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# 先裝依賴（利用 layer cache：requirements 沒變就不重裝）
+# 裝中文字型 —— 不裝的話繪圖層畫的中文會變方框
+RUN apt-get update && apt-get install -y fonts-noto-cjk \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 再複製程式碼
 COPY app/ ./app/
 
-# MCP server 以 streamable HTTP 監聽 8000
 EXPOSE 8000
-
-# 以模組方式啟動，PYTHONPATH 設為 /app 讓 app 套件可被 import
 ENV PYTHONPATH=/app
+
+# host/port 已寫在 FastMCP(...) 裡（0.0.0.0:8000）
 CMD ["python", "-m", "app.server"]

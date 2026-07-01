@@ -1,0 +1,32 @@
+# Ingress：對外入口。
+# 關鍵：/charts 路由到 MCP server（繪圖層圖檔），其餘到 Open WebUI。
+# 這樣 PUBLIC_BASE_URL=http://orders.local，圖片 http://orders.local/charts/xxx.png
+# 瀏覽器透過 Ingress 連到 MCP server 拿圖。
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: orders-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: orders.local
+      http:
+        paths:
+          # 圖檔走 MCP server（順序重要：/charts 要在 / 前面）
+          - path: /charts
+            pathType: Prefix
+            backend:
+              service:
+                name: mcp-server
+                port:
+                  number: 8000
+          # 其餘走 Open WebUI
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080

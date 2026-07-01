@@ -1,5 +1,4 @@
-# ConfigMap：把 litellm_config.yaml 的內容放進 k8s。
-# 等同 compose 裡的 volume 掛載設定檔，但設定與映像解耦。
+# LiteLLM 設定，列出要用的 Claude 模型。
 apiVersion: v1
 kind: ConfigMap
 metadata:

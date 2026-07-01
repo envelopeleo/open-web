@@ -1,0 +1,45 @@
+# MCP server：取數 + 繪圖。
+# 注意兩個環境變數：
+#   ARCH1_BASE_URL  → 用 Arch1 的 Service 名（叢集內連）
+#   PUBLIC_BASE_URL → 用對外 Ingress 網址（圖片由瀏覽器抓，要對外可達）
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcp-server
+  template:
+    metadata:
+      labels:
+        app: mcp-server
+    spec:
+      containers:
+        - name: mcp-server
+          image: mcp-server:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            # 叢集內連 Arch1，用 Service 名
+            - name: ARCH1_BASE_URL
+              value: "http://arch1-api:8000"
+            # 圖片 URL 的基底 = 對外 Ingress 網址（瀏覽器透過它抓圖）
+            - name: PUBLIC_BASE_URL
+              value: "http://orders.local"
+            - name: CHART_DIR
+              value: "/tmp/charts"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-server
+spec:
+  type: ClusterIP
+  selector:
+    app: mcp-server
+  ports:
+    - port: 8000
+      targetPort: 8000
